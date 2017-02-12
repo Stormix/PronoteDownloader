@@ -2,7 +2,7 @@
 # @Author: Stormix - Anas Mazouni
 # @Date:   2017-02-12 23:04:51
 # @Last Modified by:   Stormiix
-# @Last Modified time: 2017-02-12 23:31:02
+# @Last Modified time: 2017-02-12 23:42:12
 # @Website: https://stormix.co
 
 #Import Some Python Modules
@@ -25,7 +25,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 #Targeted Website : Pronote
 website = "https://e212073y.index-education.net/pronote/eleve.html"
 username = "MAZOUNI"
-password = "AnasStormix1234" #input("Your Pronote password ? :")
+password = "~~~~~~~"
 #Username Text Input ID:
 user_input = "GInterface.Instances[0].idIdentification.bouton_Edit"
 #Password Text Input ID:
