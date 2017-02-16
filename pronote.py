@@ -2,15 +2,17 @@
 # @Author: Stormix - Anas Mazouni
 # @Date:   2017-02-12 23:04:51
 # @Last Modified by:   Stormiix
-# @Last Modified time: 2017-02-12 23:42:12
+# @Last Modified time: 2017-02-15 23:16:44
 # @Website: https://stormix.co
-
 #Import Some Python Modules
+
 
 import inspect, sys
 import os
 import time 
 import urllib
+import urllib.request
+from sys import platform
 
 #Import Selenium modules
 
@@ -22,10 +24,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 #Declare Variables
 
+counter = 0
 #Targeted Website : Pronote
 website = "https://e212073y.index-education.net/pronote/eleve.html"
-username = "MAZOUNI"
-password = "~~~~~~~"
+username = input('Last Name :')
+password = input("Password : ")
 #Username Text Input ID:
 user_input = "GInterface.Instances[0].idIdentification.bouton_Edit"
 #Password Text Input ID:
@@ -37,7 +40,14 @@ contenu_cour = "GInterface.Instances[0].Instances[7]_Combo0"
 
 #Initiate the selenium webdriver
 currentfolder = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
-selenium = webdriver.Chrome(currentfolder+"/chromedriver")
+#Check which operating system is being used !
+if platform == "linux" or platform == "linux2":
+    # linux
+    chrome_driver = currentfolder+"/chromedriver"
+elif platform == "win32":
+    # Windows..
+    chrome_driver = currentfolder+"/chromedriver.exe"
+selenium = webdriver.Chrome(chrome_driver)
 
 #Login Function
 def login(username,password,website):
@@ -97,14 +107,21 @@ def scan_docs(i):
     all_files = selenium.find_elements_by_xpath("//a[@class='Texte10 Maigre SouligneSurvol SouligneSurvol AvecMenuContextuel']")
     # Selenium 'find_elements_by_xpath' will fetch all these classes and put them into a list
     time.sleep(3)
+    j = 0
     # Let's loop through each file
-    for file in all_files:
+    while j < len(all_files):
+        file = all_files[j]
         #Let's get the link from the <a> element
         link = file.get_attribute("href")
         #Let's get the file name
         filename = file.text
-        # Download !
-        download_files(current_subject,link,filename)
+        if filename == "":
+            scroll() #To fix the "... Already Exists !" problem .- To you Achraf :p
+            time.sleep(3)
+        else :
+            # Download !
+            download_files(current_subject,link,filename)
+            j += 1
     #After downloading all these files , let's go back and start over ->
     reset()
 
@@ -117,24 +134,31 @@ def reset():
     selenium.refresh();
     #Pronote hates bots , so it kicks us out , let's re-login | we could solve this problem by using cookies , since Pronote uses them to check if the user is connected
     login(username,password,website)
-    time.sleep(1)
+    time.sleep(3)
     #Let's go back to Ressources pédagogiques
     selenium.find_element_by_id(contenu_cour).click()
 
 def download_files(folder,link,filename):
+    global counter
     #check if the subject folder already exists
+    folder = folder.replace("\\", "-") 
     if not os.path.isdir(folder):
         #If not , make a new one
         os.makedirs(folder)
     #Check if the file already exists , if not download it
     if not os.path.exists(folder+"/"+filename):
-        down = urllib.URLopener()
+        down = urllib.request
         # Urllib is love , Urllib is life !
-        down.retrieve(link, folder+"/"+filename)
+        down.urlretrieve(link, folder+"/"+filename)
         print(filename+"... Downloaded !")
+        counter += 1
     else:
         print(filename+"... Already Exists !")
-
+        counter += 1
+        
+def scroll():
+    print("Scrolling ....")
+    selenium.execute_script("document.getElementById('GInterface.Instances[1].Instances[3]_Zone_0').scrollTop += 220;")
 #Main Program
 login(username,password,website)
 fetch_docs()
