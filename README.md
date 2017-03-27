@@ -27,6 +27,7 @@ Open terminal and type :
    ```
      python pronote.py
    ```
+All the downloaded files can be found inside the 'PronoteFichiers' folder
 # Known issues
 None for now.
   
