@@ -18,7 +18,7 @@
    ```
    pip install selenium
    ```
- You may consider using [virtualenv](http://pypi.python.org/pypi/virtualenv] to create isolated Python
+ You may consider using [virtualenv](http://pypi.python.org/pypi/virtualenv) to create isolated Python
  environments.
 
 
